@@ -11,9 +11,13 @@ A haplotype block is a genomic region in which markers tend to exhibit strong li
 ### Missing Data Imputation:  
 The first condition applied by NILAS.py imputes missing marker data by assigning flanking markers to the 5’ and 3’ of each haplotype block. Haplotype blocks defined as missing are then subject to imputation by comparing the encoded genotypes of the flanking markers; if the markers match then the haplotype block is imputed as the genotype of adjacent haplotype block.  
 ### Marker Coverage Imputation:  
-In the VCF filtering stage of analysis markers are selected by identity to in silico restriction enzyme digest cut sites. Pybedtools is utilized to assign RE site identifiers to NILAS markers at intersecting coordinates. The number of unique in silico sites, informs the number of contigs supporting the haplotype block. This config number is weighted in imputation; haplotype block with less than two supporting contigs are imputed to the nearest neighboring haplotype block genotype. 
-With the imputation rules applied by NILAS.py, less than 0.1% of the genotype data remains as missing data. The imputed genotypes allow for annotation of introgression lines, providing valuable information on genotype composition, introgression number, recombinant breakpoint resolution, introgression size and position.  
+In the VCF filtering stage of analysis markers are selected by identity to in silico restriction enzyme digest cut sites. Pybedtools is utilized to assign RE site identifiers to NILAS markers at intersecting coordinates. The number of unique in silico sites, informs the number of contigs supporting the haplotype block. This contig number is weighted in imputation; haplotype block with less than two supporting contigs are imputed to the nearest neighboring haplotype block genotype. 
+With the imputation rules applied by NILAS_haploimputer.py, less than 0.1% of the genotype data remains as missing data. The imputed genotypes allow for annotation of introgression lines, providing valuable information on genotype composition, introgression number, recombinant breakpoint resolution, introgression size and position.  
 
+### Secondary Alternative Allele Imputation:
+Secondary alternative haplotypes from recurrent parents were distinguished from donor parents base on their frequency of occurrence across different lines. Outside of the target interval, donor parent alleles are unlikely to occur by chance at the same site multiple times, as the breeding scheme involved selection of separate individuals for each introgression and included enrichment of the genetic background toward the recurrent parent. Therefore, alleles that did not match the recurrent parent but occured at a frequency of >20% within a given NILAS.
+
+Residual heterozygosity was also observed in the donor parent lines, leading to the expectation that multiple donor alleles might have been captured within NILAS. A similar function was employed as described above, but was restricted to evaluation of the ZmPR target interval per NILAS group. This group specificity required an adjustment of allele frequency to account for the change in population, 24 lines (12 introgression and complement lines). A frequency of >95% observed recurrent parent genotypes was set per marker in ZmPR target intervals. The allele frequency condition was contingent on flanking marker logic so that alternate donor genotypes were only called when flanked by haplotype blocks with donor genotypes. A tertiary condition was then applied to the length of the alternate donor haplotype block. The alternate donor allele (DP2) would only be assigned if the distance between adjacent haplotype blocks was less than 10 Mb -- assuming a double recombination event unlikely in this genomic space. 
 
 ## Dependencies:
 
@@ -31,20 +35,27 @@ With the imputation rules applied by NILAS.py, less than 0.1% of the genotype da
 3. Group Number - ex. g31
 4. Directory containing:  
 
-      -NILAS Genotype Extracted VCF file - ex. NILAS_g31.GT  
-      -NewCon.txt: Founder Genotype Consenus File  
-      -isdigB73v4_pid96_convert.bed: In silico digestion bed file  
-      -multimode.txt: multimodal marker sites excluded in Founder genotype consensus file  
+      - NILAS Genotype Extracted VCF file - ex. NILAS_g31.GT  
+      - NewCon.txt: Founder Genotype Consenus File  
+      - isdigB73v4_pid96_convert.bed: In silico digestion bed file  
+      - multimode.txt: multimodal marker sites excluded in Founder genotype consensus file  
 
 **All input files must be tab seperated**
 
 ## Output:
-1. Group bed file containing marker-in silico-contig intersection coordinates and identifer
-2. Encoded genotype matrix for NILAS group 
-3. Imputed genotype matrix for NILAS group
-4. Genotype matrices per subgroup for introgression and complement lines
-5. Genotype Composition per subgroup files for introgression and complement lines
-6. Subgroup summary files 
+
+### FlapJack Visualization Files:
+1. Marker Coordinate file:[Group]_Coordinates.txt 
+2. Encoded genotype matrix for NILAS group: [Group]_Encoded_Genotypes.txt
+3. Imputed genotype matrix for NILAS group: [Group]_Imputed_Genotypes.txt
+4. ZmPR Genotype matrices per subgroup for introgression and complement lines: [Group]_[ZMPR]_fig.txt/COMP_fig.txt  
+### Genotype Composition Summary Files: 
+1. Group bed file containing marker-in silico-contig intersection coordinates and identifer:[Group].bed
+2. Genotype Composition per subgroup files for introgression and complement lines: [Group]_[ZMPR]_Geno_Sum.txt
+   - contains percentages of Foreground/Background Donor/Recurrent/Heterzygous/Missing Data
+3. Subgroup haplotype block summary files: [Group]_[ZMPR]_SUM.txt/SUMC.txt
+   - contains data per haplotype block including: genotype, identifier, marker number, 5/3' breakpoint density, 5/3' breakpoint coordinate, physical genomic lenght, ZmPR status, foreground/background-- percentage, 5/3' breakpoint density
+   
 
 ## Usage:
 
