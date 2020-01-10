@@ -53,7 +53,7 @@ With the imputation rules applied by NILAS_haploimputer.py, less than 0.1% of th
 2. Genotype Composition per subgroup files for introgression and complement lines: [Group]_[ZMPR]_Geno_Sum.txt
    - contains percentages of Foreground/Background Donor/Recurrent/Heterzygous/Missing Data
 3. Subgroup haplotype block summary files: [Group]_[ZMPR]_SUM.txt/SUMC.txt
-   - contains data per haplotype block including: genotype, identifier, marker number, 5/3' breakpoint density, 5/3' breakpoint coordinate, physical genomic lenght, ZmPR status, foreground/background-- percentage/ 5/3' breakpoint density
+   - contains data per haplotype block including: genotype, identifier, marker number, 5/3' breakpoint density, 5/3' breakpoint coordinate, physical genomic length, ZmPR status, foreground/background-- percentage/ 5/3' breakpoint density
    
 
 ## Usage:
