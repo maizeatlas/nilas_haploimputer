@@ -22,8 +22,6 @@ import pandas as pd
 import os
 import pybedtools
 
-
-
 #User Variables:--------------------------------------------------------------------------------------------------------------
 
 Recurrent_Parent = sys.argv[1]
@@ -69,6 +67,8 @@ ZmPR_list = ['Sample','Scheme', 'ZmPR', 'CHROM', 'Hap_Geno', 'Haplotype_Block', 
 
 NILAS_Dict = {}
 Coordinates = ['CHROM', 'POS']
+Geno_order = ['Sample','Scheme','ZmPR','DP_BG','DP_FG','Het_BG','Het_FG','NA_BG','NA_FG','RP_BG','RP_FG']
+
 #--------------------------------------------------------------------------------------------------------------------
 
 # Import GT Files (manual CoO filter)---------------------------------------------------------------------------------------------
@@ -744,7 +744,20 @@ ZmPR1_Geno_Sum['Perc_Geno'] = ZmPR1_Geno_Sum['Foreground_Perc'] + ZmPR1_Geno_Sum
 
 ZmPR1_Geno_Sum = ZmPR1_Geno_Sum.pivot_table(index=['Sample','Scheme','ZmPR'], columns=['Hap_Geno'], values='Perc_Geno', aggfunc='sum')
 ZmPR1_Geno_Sum = ZmPR1_Geno_Sum.fillna(0)
-# print(ZmPR1)
+
+ZmPR1_Geno_Sum = pd.DataFrame(ZmPR1_Geno_Sum.to_records())
+
+if 'NA_FG' in list(ZmPR1_Geno_Sum):
+    pass
+else:
+    ZmPR1_Geno_Sum['NA_FG'] = '0'
+
+if 'NA_BG' in list(ZmPR1_Geno_Sum):
+    pass
+else:
+    ZmPR1_Geno_Sum['NA_BG'] = '0'
+
+ZmPR1_Geno_Sum = ZmPR1_Geno_Sum[Geno_order]
 
 ZmPR1I = ZmPR1[~ZmPR1['Sample'].str.contains('C')]
 ZmPR1I.to_csv(path + '/' + sys.argv[1]+'x'+sys.argv[2]+r'_ZmPR1_SUM.txt', sep='\t', header=True,index=False)#------------->Global {Export}
@@ -831,6 +844,20 @@ ZmPR2_Geno_Sum['Perc_Geno'] = ZmPR2_Geno_Sum['Foreground_Perc'] + ZmPR2_Geno_Sum
 
 ZmPR2_Geno_Sum = ZmPR2_Geno_Sum.pivot_table(index=['Sample','Scheme','ZmPR'], columns=['Hap_Geno'], values='Perc_Geno', aggfunc='sum')
 ZmPR2_Geno_Sum = ZmPR2_Geno_Sum.fillna(0)
+
+ZmPR2_Geno_Sum = pd.DataFrame(ZmPR2_Geno_Sum.to_records())
+
+if 'NA_FG' in list(ZmPR2_Geno_Sum):
+    pass
+else:
+    ZmPR2_Geno_Sum['NA_FG'] = '0'
+
+if 'NA_BG' in list(ZmPR2_Geno_Sum):
+    pass
+else:
+    ZmPR2_Geno_Sum['NA_BG'] = '0'
+
+ZmPR2_Geno_Sum = ZmPR2_Geno_Sum[Geno_order]
 
 ZmPR2I = ZmPR2[~ZmPR2['Sample'].str.contains('C')]
 ZmPR2I.to_csv(path + '/' +sys.argv[1]+'x'+sys.argv[2]+r'_ZmPR2_SUM.txt', sep='\t', header=True,index=False)#------------->Global {Export}
@@ -919,6 +946,20 @@ ZmPR3_Geno_Sum['Perc_Geno'] = ZmPR3_Geno_Sum['Foreground_Perc'] + ZmPR3_Geno_Sum
 ZmPR3_Geno_Sum = ZmPR3_Geno_Sum.pivot_table(index=['Sample','Scheme','ZmPR'], columns=['Hap_Geno'], values='Perc_Geno', aggfunc='sum')
 ZmPR3_Geno_Sum = ZmPR3_Geno_Sum.fillna(0)
 
+ZmPR3_Geno_Sum = pd.DataFrame(ZmPR3_Geno_Sum.to_records())
+
+if 'NA_FG' in list(ZmPR3_Geno_Sum):
+    pass
+else:
+    ZmPR3_Geno_Sum['NA_FG'] = '0'
+
+if 'NA_BG' in list(ZmPR3_Geno_Sum):
+    pass
+else:
+    ZmPR3_Geno_Sum['NA_BG'] = '0'
+
+ZmPR3_Geno_Sum = ZmPR3_Geno_Sum[Geno_order]
+
 ZmPR3I = ZmPR3[~ZmPR3['Sample'].str.contains('C')]
 ZmPR3I.to_csv(path + '/' +sys.argv[1]+'x'+sys.argv[2]+r'_ZmPR3_SUM.txt', sep='\t', header=True,index=False)#------------->Global {Export}
 ZmPR3C = ZmPR3[ZmPR3['Sample'].str.contains('C')]
@@ -999,12 +1040,25 @@ ZmPR4_BG_Geno['Hap_Geno'] = ZmPR4_BG_Geno['Hap_Geno'].map({'DP':'DP_BG','RP':'RP
 
 
 ZmPR4_Geno_Sum = pd.concat([ZmPR4_FG_Geno,ZmPR4_BG_Geno], axis=0,sort=True)
-# ZmPR4_Geno_Sum = ZmPR4_Geno_Sum[~ZmPR4_Geno_Sum['Sample'].str.contains('C')]
 ZmPR4_Geno_Sum = ZmPR4_Geno_Sum.fillna(0)
 ZmPR4_Geno_Sum['Perc_Geno'] = ZmPR4_Geno_Sum['Foreground_Perc'] + ZmPR4_Geno_Sum['Background_Perc']
 
 ZmPR4_Geno_Sum = ZmPR4_Geno_Sum.pivot_table(index=['Sample','Scheme','ZmPR'], columns=['Hap_Geno'], values='Perc_Geno', aggfunc='sum')
 ZmPR4_Geno_Sum = ZmPR4_Geno_Sum.fillna(0)
+
+ZmPR4_Geno_Sum = pd.DataFrame(ZmPR4_Geno_Sum.to_records())
+
+if 'NA_FG' in list(ZmPR4_Geno_Sum):
+    pass
+else:
+    ZmPR4_Geno_Sum['NA_FG'] = '0'
+
+if 'NA_BG' in list(ZmPR4_Geno_Sum):
+    pass
+else:
+    ZmPR4_Geno_Sum['NA_BG'] = '0'
+
+ZmPR4_Geno_Sum = ZmPR4_Geno_Sum[Geno_order]
 
 ZmPR4I = ZmPR4[~ZmPR4['Sample'].str.contains('C')]
 ZmPR4I.to_csv(path + '/' +sys.argv[1]+'x'+sys.argv[2]+r'_ZmPR4_SUM.txt', sep='\t', header=True,index=False)#------------->Global {Export}
